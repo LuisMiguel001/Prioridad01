@@ -1,0 +1,87 @@
+﻿@page "/Prioridad"
+@page "/Prioridad/{PrioridadId:int}"
+@inject SistemaBLL SistemaBLL
+@using Prioridad.Models
+@using Radzen
+@using Radzen.Blazor
+
+<EditForm Model="PrioridadId" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <h3>Registro de Sistemas</h3>
+            </div>
+            <div class="card-body">
+                @*SistemaId*@
+                <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 col-xl-4">
+                    <div class="input-group mb-3">
+                        <InputNumber @bind-Value="prioridad.PrioridadId" class="form-control" aria-describedby="buscarButton" />
+                        <button @onclick="Buscar" class="btn btn-outline-primary" type="button" id="buscarButton">
+                            <i class="oi oi-magnifying-glass" />
+                        </button>
+                    </div>
+                </div>
+
+                @*Nombre*@
+                <div class="mb-3">
+                    <label class="form-label">Nombre</label>
+                    <InputText @bind-Value="prioridad.Descripcion" class="form-control" />
+                    <ValidationMessage For="@(() => prioridad.DiasCompromiso)" />
+                </div>
+
+            </div>
+
+            <div class="card-footer d-flex justify-content-center">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-primary" @onclick="Nuevo"> <i class="oi oi-file" /> Nuevo</button>
+                    <button type="submit" class="btn btn-success"> <i class="oi oi-document" /> Guardar</button>
+                    <button type="button" class="btn btn-danger" @onclick="Eliminar"><i class="oi oi-trash" /> Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</EditForm>
+
+@code {
+    [Parameter]
+    public int PrioridadId { get; set; }
+    public PrioridadR prioridad { get; set; } = new PrioridadR();
+
+    protected override void OnInitialized()
+    {
+        if (PrioridadId > 0)
+        {
+            this.prioridad.PrioridadId = this.PrioridadId;
+            Buscar();
+        }
+    }
+
+    public void Guardar()
+    {
+        SistemaBLL.Guardar(prioridad);
+        Nuevo();
+    }
+    public void Nuevo()
+    {
+        this.prioridad = new PrioridadR();
+    }
+
+    public void Eliminar()
+    {
+        Buscar();
+        SistemaBLL.Eliminar(this.prioridad);
+        Nuevo();
+    }
+    public void Buscar()
+    {
+        var PrioridadEncontrada = SistemaBLL.Buscar(prioridad.PrioridadId);
+        if (PrioridadEncontrada != null)
+        {
+            this.prioridad = PrioridadEncontrada;
+        }
+    }
+
+}

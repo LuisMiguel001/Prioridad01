@@ -1,13 +1,24 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Prioridad.Data;
+using Microsoft.EntityFrameworkCore;
+using Prioridad.BLL;
+using Prioridad.DAL;
+
 
 var builder = WebApplication.CreateBuilder(args);
+{
+	// Add services to the container.
+	builder.Services.AddRazorPages();
+	builder.Services.AddServerSideBlazor();
+	//builder.Services.AddSingleton<WeatherForecastService>();
 
-// Add services to the container.
-builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
+	var ConStr = builder.Configuration.GetConnectionString("ConStr");
+
+	builder.Services.AddDbContext<PrioridadContext>(Options => Options.UseSqlite(ConStr));
+
+	builder.Services.AddScoped<SistemaBLL>();
+
+}
 
 var app = builder.Build();
 
